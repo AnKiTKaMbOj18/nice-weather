@@ -1,8 +1,6 @@
 let CACHE_NAME = 'nyc-weather';
 let urlsToCache = [
   '/',
-  "/static/css/2.ec02d681.chunk.css",
-  "/static/js/main.0f590be8.chunk.js",
 ];
 
 // Install a service worker

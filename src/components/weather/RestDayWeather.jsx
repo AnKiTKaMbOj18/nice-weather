@@ -40,7 +40,7 @@ export default function SingleLineGridList({todayForecast}) {
           tempDate= hours < 10 ? 0+""+hours : hours;
           return (
           <GridListTile key={i}>
-            <img src={process.env.PUBLIC_URL+"weather.jpeg"} alt={"weatherImage"} />
+            <img src={process.env.PUBLIC_URL+"weather1.png"} alt={"weatherImage"} />
             <GridListTileBar
               title={`${tempFeel}°`}
               classes={{

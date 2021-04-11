@@ -90,7 +90,8 @@ export default function CurrentWeather(){
   const { paperClass, iconWeather, text } = useStyles();
   const mainTemp = weatherData ? parseInt(weatherData.main.temp - 273.15):null;
   const feelsLike = weatherData ? parseInt(weatherData.main.feels_like - 273.15): null;
-  const date = weatherData ? new Date(weatherData.dt): null;
+  // const date = weatherData ? new Date(weatherData.dt * 1000): null;
+  const date = weatherData ? new Date(): null;
   let hours,minutes,seconds, weekDay;
 if(date){  // Hours part from the timestamp
    hours = date.getHours();
@@ -103,6 +104,18 @@ if(date){  // Hours part from the timestamp
     case 1:
      weekDay = "Monday";
      break;
+    case 2:
+      weekDay = "Tuesday";
+      break;
+    case 3:
+      weekDay = "Wednesday";
+      break;
+    case 4:
+      weekDay = "Thursday";
+      break;
+    case 5:
+      weekDay = "Thursday";
+      break;
      default:
       weekDay="..."
   }}
@@ -173,7 +186,7 @@ if(date){  // Hours part from the timestamp
           <div style={{display:"flex", alignItems: "center"}}>
             <SpeedIcon style={{fontSize: "32"}} />
             <div>
-              <Typography style={{marginLeft: "12px"}}>Speed</Typography>
+              <Typography style={{marginLeft: "12px"}}>Wind Speed</Typography>
               <Typography style={{marginLeft: "12px"}}>{weatherData && weatherData.wind.speed}</Typography>
             </div>
           </div>

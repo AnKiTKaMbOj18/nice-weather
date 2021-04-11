@@ -2,14 +2,14 @@ import { Divider, Paper, Typography } from '@material-ui/core';
 import React, {useEffect,useState} from 'react';
 import WeatherIcon from '@material-ui/icons/AcUnit';
 import IconButton from '@material-ui/core/IconButton';
-import { makeStyles, withTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import WbIncandescentIcon from '@material-ui/icons/WbIncandescent';
 import EmojiNatureIcon from '@material-ui/icons/EmojiNature';
 import FlareIcon from '@material-ui/icons/Flare';
 import SpeedIcon from '@material-ui/icons/Speed';
 import ApiService from '../../utils/service'
 import NextDaysWeatherModal from './NextDaysWeatherModal';
-import { DateRangeTwoTone } from '@material-ui/icons';
+// import { DateRangeTwoTone } from '@material-ui/icons';
 import RestDayWeather from './RestDayWeather';
 import { useCurrentPosition } from './useCurrentPosition';
 

@@ -4,8 +4,6 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import CloudIcon from '@material-ui/icons/Cloud';
 
 const useStyles = makeStyles((theme) => ({
   root: {

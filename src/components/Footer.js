@@ -18,11 +18,11 @@ export default function Footer({classes,theme}){
         showLabels
         className={classes.root}
         style={{
-          position: "absolute",
-          width: "100%",
-          overflow: "hidden",
-          left: "0",
-          bottom: "0",
+          // position: "absolute",
+          // width: "100%",
+          // overflow: "hidden",
+          // left: "0",
+          // bottom: "0",
           background: theme.palette.primary.dark
         }}
       >

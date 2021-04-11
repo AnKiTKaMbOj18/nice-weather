@@ -8,50 +8,10 @@ import EmojiNatureIcon from '@material-ui/icons/EmojiNature';
 import FlareIcon from '@material-ui/icons/Flare';
 import SpeedIcon from '@material-ui/icons/Speed';
 import ApiService from '../../utils/service'
-
-// const data = {
-//   "coord": {
-//   "lon": 4.8897,
-//   "lat": 52.374
-//   },
-//   "weather": [
-//   {
-//   "id": 803,
-//   "main": "Clouds",
-//   "description": "broken clouds",
-//   "icon": "04n"
-//   }
-//   ],
-//   "base": "stations",
-//   "main": {
-//   "temp": 276,
-//   "feels_like": 270.11,
-//   "temp_min": 275.37,
-//   "temp_max": 276.48,
-//   "pressure": 1012,
-//   "humidity": 81
-//   },
-//   "visibility": 7000,
-//   "wind": {
-//   "speed": 9.26,
-//   "deg": 290
-//   },
-//   "clouds": {
-//   "all": 75
-//   },
-//   "dt": 1617649949,
-//   "sys": {
-//   "type": 1,
-//   "id": 1524,
-//   "country": "NL",
-//   "sunrise": 1617599115,
-//   "sunset": 1617646834
-//   },
-//   "timezone": 7200,
-//   "id": 2759794,
-//   "name": "Amsterdam",
-//   "cod": 200
-//   }
+import NextDaysWeatherModal from './NextDaysWeatherModal';
+import { DateRangeTwoTone } from '@material-ui/icons';
+import RestDayWeather from './RestDayWeather';
+import { useCurrentPosition } from './useCurrentPosition';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,17 +35,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CurrentWeather(){
-  const [weatherData, setData] = useState(null)
+  const [weatherData, setData] = useState(null);
+  const [hourlyForecast, setHourlyForecast] = useState(null);
+  const [position,error] = useCurrentPosition();
 
   useEffect(()=>{
     async function fetchMyAPI() {
-      let response = await ApiService({apiUrl: 'currentWeather', appendUrl: process.env.REACT_APP_API_KEY})
-      // response = await response.json()
+      const appendUrl = `lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${process.env.REACT_APP_API_KEY}`
+      let response = await ApiService({apiUrl: 'currentWeather', appendUrl});
       setData(response.response.data);
+      const hourlyResponse = await ApiService({apiUrl: 'hourlyForecast', appendUrl});
+      setHourlyForecast(hourlyResponse.response.data);
     }
-    fetchMyAPI();
-  },[])
-  console.log(weatherData);
+    if(!error&& position&&position.coords) {
+      fetchMyAPI();
+    }
+  },[error,position])
 
   const { paperClass, iconWeather, text } = useStyles();
   const mainTemp = weatherData ? parseInt(weatherData.main.temp - 273.15):null;
@@ -114,11 +79,26 @@ if(date){  // Hours part from the timestamp
       weekDay = "Thursday";
       break;
     case 5:
-      weekDay = "Thursday";
+      weekDay = "Friday";
       break;
-     default:
-      weekDay="..."
+    case 6:
+      weekDay = "Saturday";
+      break;
+    case 0:
+      weekDay = "Sunday";
+      break;
+    default:
+      weekDay="";
   }}
+  let todayForecast;
+  let isToday;
+  if(hourlyForecast) {
+    todayForecast = hourlyForecast.list.slice(0,8);
+    const date = new Date(todayForecast[0].dt_txt);
+    const currentDate = new Date().getDate();
+    const itemDate = date.getDate();
+    isToday = currentDate === itemDate;
+  }
 
   return(
     <>
@@ -153,7 +133,7 @@ if(date){  // Hours part from the timestamp
       <Divider />
       <div style={{display: "flex", alignItems: "center", margin: "16px"}}>
         <div style={{width: "50%"}}>
-          <div style={{display:"flex", alignItems: "center"}}>
+          <div style={{display:"flex", alignItems: "center",justifyContent: "center"}}>
             <WbIncandescentIcon style={{fontSize: "32"}} />
             <div>
               <Typography style={{marginLeft: "12px"}}>Humidity</Typography>
@@ -162,7 +142,7 @@ if(date){  // Hours part from the timestamp
           </div>
         </div>
         <div style={{width: "50%"}}>
-          <div style={{display:"flex", alignItems: "center"}}>
+          <div style={{display:"flex", alignItems: "center",justifyContent: "center"}}>
             <EmojiNatureIcon style={{fontSize: "32"}} />
             <div>
               <Typography style={{marginLeft: "12px"}}>Feels Like</Typography>
@@ -174,7 +154,7 @@ if(date){  // Hours part from the timestamp
       <Divider />
       <div style={{display: "flex", alignItems: "center", margin: "16px", paddingBottom: "24px"}}>
         <div style={{width: "50%"}}>
-          <div style={{display:"flex", alignItems: "center"}}>
+          <div style={{display:"flex", alignItems: "center",justifyContent: "center"}}>
             <FlareIcon style={{fontSize: "32"}} />
             <div>
               <Typography style={{marginLeft: "12px"}}>Pressure</Typography>
@@ -183,7 +163,7 @@ if(date){  // Hours part from the timestamp
           </div>
         </div>
         <div style={{width: "50%"}}>
-          <div style={{display:"flex", alignItems: "center"}}>
+          <div style={{display:"flex", alignItems: "center",justifyContent: "center"}}>
             <SpeedIcon style={{fontSize: "32"}} />
             <div>
               <Typography style={{marginLeft: "12px"}}>Wind Speed</Typography>
@@ -193,6 +173,11 @@ if(date){  // Hours part from the timestamp
         </div>
       </div>
     </Paper>
+    <div style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+      <Typography color="textPrimary">{isToday ? "Today": "Tommorow"}</Typography>
+      <NextDaysWeatherModal />
+    </div>
+    <RestDayWeather todayForecast={todayForecast} />
     </>
   )
 }

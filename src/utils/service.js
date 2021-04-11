@@ -2,7 +2,8 @@ import axios from "axios";
 
 const endpoints = {
   testApi: "/api/test/users",
-  currentWeather: "https://api.openweathermap.org/data/2.5/weather?q=amsterdam&appid="
+  currentWeather: "https://api.openweathermap.org/data/2.5/weather/?",
+  hourlyForecast: "https://api.openweathermap.org/data/2.5/forecast/?"
 };
 
 export const getApiEndPointsFromStore = requestedKey => {

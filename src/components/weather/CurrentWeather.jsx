@@ -1,5 +1,5 @@
 import { Divider, Paper, Typography } from '@material-ui/core';
-import React, {useEffect,useState} from 'react';
+import React from 'react';
 import WeatherIcon from '@material-ui/icons/AcUnit';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
@@ -7,11 +7,6 @@ import WbIncandescentIcon from '@material-ui/icons/WbIncandescent';
 import EmojiNatureIcon from '@material-ui/icons/EmojiNature';
 import FlareIcon from '@material-ui/icons/Flare';
 import SpeedIcon from '@material-ui/icons/Speed';
-import ApiService from '../../utils/service'
-import NextDaysWeatherModal from './NextDaysWeatherModal';
-// import { DateRangeTwoTone } from '@material-ui/icons';
-import RestDayWeather from './RestDayWeather';
-import { useCurrentPosition } from './useCurrentPosition';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,30 +29,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function CurrentWeather(){
-  const [weatherData, setData] = useState(null);
-  const [hourlyForecast, setHourlyForecast] = useState(null);
-  const [position,error] = useCurrentPosition();
-
-  useEffect(()=>{
-    async function fetchMyAPI() {
-      const appendUrl = `lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${process.env.REACT_APP_API_KEY}`
-      let response = await ApiService({apiUrl: 'currentWeather', appendUrl});
-      setData(response.response.data);
-      const hourlyResponse = await ApiService({apiUrl: 'hourlyForecast', appendUrl});
-      setHourlyForecast(hourlyResponse.response.data);
-    }
-    if(!error&& position&&position.coords) {
-      fetchMyAPI();
-    }
-  },[error,position])
-
+export default function CurrentWeather({ weatherData }){
   const { paperClass, iconWeather, text } = useStyles();
+
   const mainTemp = weatherData ? parseInt(weatherData.main.temp - 273.15):null;
   const feelsLike = weatherData ? parseInt(weatherData.main.feels_like - 273.15): null;
   // const date = weatherData ? new Date(weatherData.dt * 1000): null;
   const date = weatherData ? new Date(): null;
   let hours,minutes,seconds, weekDay;
+
 if(date){  // Hours part from the timestamp
    hours = date.getHours();
 // Minutes part from the timestamp
@@ -90,15 +70,7 @@ if(date){  // Hours part from the timestamp
     default:
       weekDay="";
   }}
-  let todayForecast;
-  let isToday;
-  if(hourlyForecast) {
-    todayForecast = hourlyForecast.list.slice(0,8);
-    const date = new Date(todayForecast[0].dt_txt);
-    const currentDate = new Date().getDate();
-    const itemDate = date.getDate();
-    isToday = currentDate === itemDate;
-  }
+
 
   return(
     <>
@@ -173,11 +145,6 @@ if(date){  // Hours part from the timestamp
         </div>
       </div>
     </Paper>
-    <div style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
-      <Typography color="textPrimary">{isToday ? "Today": "Tommorow"}</Typography>
-      <NextDaysWeatherModal />
-    </div>
-    <RestDayWeather todayForecast={todayForecast} />
     </>
   )
 }

@@ -14,7 +14,7 @@ export default function Header({classes}) {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
-          Nice Weather
+          Nyc Weather
         </Typography>
         <Button color="inherit">Login</Button>
       </Toolbar>
